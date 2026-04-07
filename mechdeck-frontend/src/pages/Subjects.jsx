@@ -57,10 +57,21 @@ const Subjects = () => {
   const fetchSubjects = async () => {
     setFetchError('');
     try {
-      const res = await api.get('/api/subjects');
-      setSubjects(normalizeResponse(res.data));
+      const res = await api.get('/api/subjects/all');
+      const normalized = normalizeResponse(res.data);
+      console.log('Subjects API response:', res.data);
+      console.log('Normalized subjects:', normalized);
+      setSubjects(normalized);
     } catch (err) {
-      setFetchError(err?.response?.data?.message || err.message || 'Failed to load subjects');
+      console.error('Error fetching subjects:', err);
+      const status = err?.response?.status;
+      if (status === 401) {
+        setFetchError('Authentication required. Please log in again.');
+      } else if (status === 403) {
+        setFetchError('Access denied. Admin privileges required.');
+      } else {
+        setFetchError(err?.response?.data?.message || err.message || 'Failed to load subjects');
+      }
     }
   };
 
@@ -187,16 +198,25 @@ const Subjects = () => {
           <Typography variant="h6">
             Subject Management
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => {
-              resetForm();
-              setCreateOpen(true);
-            }}
-          >
-            Add Subject
-          </Button>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button
+              variant="outlined"
+              onClick={() => fetchSubjects()}
+              size="small"
+            >
+              Refresh
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => {
+                resetForm();
+                setCreateOpen(true);
+              }}
+            >
+              Add Subject
+            </Button>
+          </Box>
         </Box>
 
         {fetchError && (
@@ -228,20 +248,30 @@ const Subjects = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginatedSubjects.map((subject) => (
-                <TableRow key={subject.id || subject._id}>
-                  <TableCell>{subject.code}</TableCell>
-                  <TableCell>{subject.description}</TableCell>
-                  <TableCell align="right">
-                    <IconButton size="small" onClick={() => openEdit(subject)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton size="small" onClick={() => handleDelete(subject.id || subject._id)}>
-                      <DeleteIcon />
-                    </IconButton>
+              {paginatedSubjects.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={3} align="center" sx={{ py: 4 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      {fetchError ? 'Error loading subjects' : 'No subjects found. Click "Add Subject" to create your first subject.'}
+                    </Typography>
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                paginatedSubjects.map((subject) => (
+                  <TableRow key={subject.id || subject._id}>
+                    <TableCell>{subject.code}</TableCell>
+                    <TableCell>{subject.description}</TableCell>
+                    <TableCell align="right">
+                      <IconButton size="small" onClick={() => openEdit(subject)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton size="small" onClick={() => handleDelete(subject.id || subject._id)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
           <TablePagination

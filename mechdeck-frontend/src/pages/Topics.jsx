@@ -61,16 +61,27 @@ const Topics = () => {
   const fetchTopics = async () => {
     setFetchError('');
     try {
-      const res = await api.get('/api/topics');
-      setTopics(normalizeResponse(res.data));
+      const res = await api.get('/api/topics/all');
+      const normalized = normalizeResponse(res.data);
+      console.log('Topics API response:', res.data);
+      console.log('Normalized topics:', normalized);
+      setTopics(normalized);
     } catch (err) {
-      setFetchError(err?.response?.data?.message || err.message || 'Failed to load topics');
+      console.error('Error fetching topics:', err);
+      const status = err?.response?.status;
+      if (status === 401) {
+        setFetchError('Authentication required. Please log in again.');
+      } else if (status === 403) {
+        setFetchError('Access denied. Admin privileges required.');
+      } else {
+        setFetchError(err?.response?.data?.message || err.message || 'Failed to load topics');
+      }
     }
   };
 
   const fetchSubjects = async () => {
     try {
-      const res = await api.get('/api/subjects');
+      const res = await api.get('/api/subjects/all');
       const normalized = normalizeResponse(res.data);
       setSubjects(normalized);
     } catch (err) {

@@ -33,6 +33,11 @@ public class SubjectController {
         return subjectService.getSubjects();
     }
 
+    @GetMapping("/all")
+    public List<SubjectResponse> getAllSubjects() {
+        return subjectService.getAllSubjects();
+    }
+
     @GetMapping("/{id}")
     public SubjectResponse getSubjectById(@PathVariable UUID id) {
         return subjectService.getSubjectById(id);

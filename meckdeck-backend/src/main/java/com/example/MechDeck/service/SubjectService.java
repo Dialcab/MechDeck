@@ -26,6 +26,13 @@ public class SubjectService {
                 .toList();
     }
 
+    public List<SubjectResponse> getAllSubjects() {
+        return subjectRepository.findAll().stream()
+                .sorted(Comparator.comparing(this::subjectName, String.CASE_INSENSITIVE_ORDER))
+                .map(this::toResponse)
+                .toList();
+    }
+
     public SubjectResponse getSubjectById(UUID id) {
         Subject subject = subjectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject not found: " + id));

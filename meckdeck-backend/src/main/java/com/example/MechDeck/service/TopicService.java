@@ -29,6 +29,13 @@ public class TopicService {
                 .toList();
     }
 
+    public List<TopicResponse> getAllTopics() {
+        return topicRepository.findAll().stream()
+                .sorted(Comparator.comparing(Topic::getName, String.CASE_INSENSITIVE_ORDER))
+                .map(this::toResponse)
+                .toList();
+    }
+
     public TopicResponse getTopicById(UUID id) {
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Topic not found: " + id));

@@ -33,6 +33,11 @@ public class TopicController {
         return topicService.getTopics();
     }
 
+    @GetMapping("/all")
+    public List<TopicResponse> getAllTopics() {
+        return topicService.getAllTopics();
+    }
+
     @GetMapping("/{id}")
     public TopicResponse getTopicById(@PathVariable UUID id) {
         return topicService.getTopicById(id);
