@@ -42,6 +42,18 @@ const MainLayout = ({ children }) => {
             </Button>
           )}
 
+          {role === 'ADMIN' && (
+            <Button color="inherit" onClick={() => navigate('/subjects')}>
+              Subjects
+            </Button>
+          )}
+
+          {role === 'ADMIN' && (
+            <Button color="inherit" onClick={() => navigate('/topics')}>
+              Topics
+            </Button>
+          )}
+
           <Typography variant="body2" sx={{ mx: 2 }}>
             {role || ''}
           </Typography>

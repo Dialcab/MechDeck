@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
 import Questions from "../pages/Questions";
 import Users from "../pages/Users";
+import Subjects from "../pages/Subjects";
+import Topics from "../pages/Topics";
 import Login from "../pages/Login";
 import ProtectedRoute from "./ProtectedRoute";
 import MainLayout from "../components/MainLayout";
@@ -40,6 +42,28 @@ const AppRouter = () => {
             <ProtectedRoute allowedRoles={["ADMIN"]}>
               <MainLayout>
                 <Users />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/subjects"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <MainLayout>
+                <Subjects />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/topics"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <MainLayout>
+                <Topics />
               </MainLayout>
             </ProtectedRoute>
           }
